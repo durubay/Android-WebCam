@@ -1,0 +1,27 @@
+<resources>
+
+    <string name="app_name">Webcam</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">Webcam</string>
+    <string name="settings">Settings</string>
+    <string name="run_foreground">Run foreground mJPEG stream</string>
+    <string name="run_background">Run background mJPEG stream</string>
+    <string name="run_background_timed_capture">Run background timer photo upload</string>
+    <string name="stop_running">Stop running</string>
+    <string name="can_not_open_camera">Can not open camera</string>
+    <string name="introducation">Turn this Android phone into a WiFi WebCam which can either provide a limited frame-rate mJPEG video stream or capture full resolution photos periodically and upload to a remote WebServer.</string>
+    <string name="service_started">Webcam started</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="select_camera">Select camera</string>
+    <string name="fps">Stream Framerate</string>
+    <string name="photo_frequency">Photo Frequency (delay in mins)</string>
+    <string name="resolution">Stream Resolution</string>
+    <string name="photo_resolution">Photo Resolution</string>
+    <string name="quality">Stream Quality</string>
+    <string name="timed_capture_resolution">Photo Resolution</string>
+    <string name="port">Stream Port</string>
+    <string name="server_url">Photo Upload URL</string>
+    <string name="photo_7to7">Photo 7AM-to-7PM mode</string>
+    <string name="photo_light_threshold">Photo Daylight Threshold</string>
+</resources>
