@@ -158,6 +158,13 @@ public class BackgroundPhotoService extends Service {
 
                 } catch (NumberFormatException e) { }
 
+                try {
+                    Log.i(TAG, "Taking a photo on start.");
+                    takePictureAndUpload(uploadURL, photoWidth, photoHeight);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
 
                 captureTimer.schedule(new TimerTask() {
                     @Override
