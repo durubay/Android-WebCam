@@ -5,9 +5,12 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -98,9 +101,10 @@ public class BackgroundPhotoService extends Service {
         {
             public void surfaceCreated(SurfaceHolder holder) {
                 Log.v(TAG, "BackgroundPhotoService -> surfaceCreated()");
-
-                mCamera = Camera.open(cameraId);
-                if (mCamera == null) {
+                try {
+                    mCamera = Camera.open(cameraId);
+                } catch (Exception e) { // can't open camera
+//                if (mCamera == null) {
                     Log.v(TAG, "Can't open camera" + cameraId);
                     
                     Toast.makeText(BackgroundPhotoService.this, getString(R.string.can_not_open_camera),
@@ -287,6 +291,20 @@ public class BackgroundPhotoService extends Service {
 
     } // get picture file name
 
+    // https://gist.github.com/codeswimmer/858833
+    public Bitmap rotateBitmap(Bitmap original, float degrees) {
+        int width = original.getWidth();
+        int height = original.getHeight();
+
+        Matrix matrix = new Matrix();
+        matrix.preRotate(degrees);
+
+        Bitmap rotatedBitmap = Bitmap.createBitmap(original, 0, 0, width, height, matrix, true);
+        Canvas canvas = new Canvas(rotatedBitmap);
+        canvas.drawBitmap(original, 5.0f, 0.0f, null);
+
+        return rotatedBitmap;
+    }
 
     private void takePictureAndUpload(final String uploadURL, Integer photoWidth, Integer photoHeight) throws InterruptedException {
 
@@ -302,6 +320,24 @@ public class BackgroundPhotoService extends Service {
             public void onPictureTaken(byte[] data, Camera camera) {
                 Log.i(TAG, "Saving a bitmap to file");
                 Bitmap picture = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+/*
+                int orientation = getResources().getConfiguration().orientation;
+                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    Log.i(TAG, "Phone appears to be in landscape.");
+                    // In landscape
+                } else {
+                    // In portrait
+                    Log.i(TAG, "Phone appears to be in portrait.");
+                       //picture = rotateBitmap(picture, 90);
+                      //picture.
+                    //https://acomputerengineer.com/2016/06/19/rotate-imagebitmap-to-any-angle-in-android/
+                    float degrees = 90;//rotation degree
+                    Matrix matrix = new Matrix();
+                    matrix.setRotate(degrees);
+                    picture = Bitmap.createBitmap(picture, 0, 0, picture.getWidth(), picture.getHeight(), matrix, true);
+                }
+*/
 
                 // Write output
                 try {
@@ -400,6 +436,16 @@ public class BackgroundPhotoService extends Service {
         parameters.setPictureSize(photoWidth, photoHeight);
         parameters.setFocusMode(Parameters.FOCUS_MODE_AUTO); // Probably want this for a webcam looking out a window
         parameters.setFlashMode(Parameters.FLASH_MODE_OFF); // Don't really wany this
+
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Log.i(TAG, "Phone appears to be in landscape.");
+            // In landscape
+        } else {
+            // In portrait
+            Log.i(TAG, "Phone appears to be in portrait.");
+            parameters.setRotation(90);
+        }
         mCamera.setParameters(parameters);
 
     }
